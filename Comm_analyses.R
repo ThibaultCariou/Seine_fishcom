@@ -802,7 +802,23 @@ trait.df$growth.coefficient<- catvar(trait.df$growth.coefficient, c(0.5,1,1.5,2,
 toto <- as.matrix(trait.df[,-1])
 rownames(toto) <- trait.df[,1]
 res <- MCA(toto)
+mcavar12 <-fviz_mca_var(res, choice = "mca.cor", 
+             repel = TRUE, # Avoid text overlapping (slow)
+             ggtheme = theme_minimal())+ ggtitle("Variables ACM")
+mcaind12 <-fviz_mca_ind(res, 
+                        repel = TRUE, # Avoid text overlapping (slow)
+                        ggtheme = theme_minimal(), labelsize=0.35) +ggtitle("Individus ACM")
+cowplot::plot_grid(mcavar12,mcaind12,ncol=2)
+
 res.hcpc <- HCPC(res, nb.clust = -1, consol=F)
+
+library(viridis)
+fviz_dend(res.hcpc, 
+          cex = 0.7,      
+          palette = "jco",
+          rect=T, rect_fill = F,
+          ylab="Distance",main="")
+
 
 res.hcpc$desc.var$category
 res.hcpc$desc.ind$dist
@@ -885,6 +901,13 @@ ggplot(distinct(Clust.comp.rel[,-2]), aes(fill=Clust.trait, y=Abund_rel, x=Year)
   facet_grid(.~Survey,scales="free",space="free")+
   theme(strip.text.x = element_blank())
 
+ggplot(distinct(Clust.comp.rel[,-2]), aes(fill=Clust.trait, y=Abund_rel, x=Year)) + 
+  geom_bar(position="stack", stat="identity")+
+  #scale_fill_manual(values=get_palette(c("#00AFBB", "#E7B800", "#FC4E07"), length(unique(Clust.comp$Clust.trait))))+
+  scale_fill_viridis_d()+
+  labs(fill="Groupes fonctionnels")+xlab("Années")+ylab("Abondance relative")+
+  facet_grid(.~Survey,scales="free",space="free")+
+  theme(strip.text.x = element_blank())
 
 
 
@@ -1645,7 +1668,7 @@ NS.df0 <- dplyr::left_join(codif, NS.df0) %>% dplyr::select(Station_Code, Year, 
 NS.df0$Scientific_Name <- as.character(NS.df0$Scientific_Name)
 
 Classif <- worms::wormsbynames(unique(NS.df0$Scientific_Name),match = T)
-Sp_keep <- Classif$name[Classif$class %in% c("Actinopterygii","Elasmobranchii","Bacillariophyceae")] #"Bacillariophyceae" for flounder
+Sp_keep <- Classif$name[Classif$class %in% c("Actinopteri","Elasmobranchii","Bacillariophyceae")] #"Bacillariophyceae" for flounder
 NS.df0 <- NS.df0[NS.df0$Scientific_Name %in% Sp_keep,]
 
 NS.df0 <- aggregate(Species_Density ~ Station_Code+meanLon+meanLat+Year+Scientific_Name, data=NS.df0, sum)
@@ -1734,7 +1757,7 @@ View(CMW.dom$CWM)
 View(cbind(abund.trait.an.assemblage[,c(1:2)],CMW.dom$CWM))
 
 
-
+https://github.com/ThibaultCariou/Seine_fishcom
 
 #FD index
 FDiv <- dbFD(as.matrix(trait.dffactor), abund.trait, CWM.type="dom")

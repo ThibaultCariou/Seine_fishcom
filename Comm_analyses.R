@@ -151,7 +151,8 @@ H.plot <- ggplot()+
   theme_minimal() + xlab("Longitude") + ylab("Latitude") + 
   coord_fixed()+
   geom_text(data=centro,aes(x=meanLon,y=meanLat,label=Sector), col="navy",fontface = "bold")+
-  scale_fill_viridis_c()+theme(legend.position = "bottom")
+  scale_fill_viridis_c()+theme(legend.position = "bottom")+
+  theme(legend.key.size = unit(1,"cm"))
 
 J.plot <- ggplot()+
   geom_polygon(data = coast.fort, aes(x = long, y = lat, group = group),fill="grey", col="black")+
@@ -159,7 +160,8 @@ J.plot <- ggplot()+
   theme_minimal() + xlab("Longitude") + ylab("Latitude") + 
   coord_fixed()+
   geom_text(data=centro,aes(x=meanLon,y=meanLat,label=Sector), col="navy",fontface = "bold")+
-  scale_fill_viridis_c()+theme(legend.position = "bottom")
+  scale_fill_viridis_c()+theme(legend.position = "bottom")+
+  theme(legend.key.size = unit(1,"cm"))
 
 # cowplot::plot_grid(H.plot,J.plot)
 
@@ -169,16 +171,18 @@ Dens.plot <- ggplot()+
   theme_minimal() + xlab("Longitude") + ylab("Latitude") + 
   coord_fixed()+
   geom_text(data=centro,aes(x=meanLon,y=meanLat,label=Sector), col="navy",fontface = "bold")+
-  scale_fill_viridis_c()+theme(legend.position = "bottom")
+  scale_fill_viridis_c()+theme(legend.position = "bottom")+
+  theme(legend.key.size = unit(1,"cm"))
 Juv.plot <- ggplot()+
   geom_polygon(data = coast.fort, aes(x = long, y = lat, group = group),fill="grey", col="black")+
   geom_polygon(data = Srate_color, aes(x = long, y = lat, group = group, fill=Juveniles), col="black")+
   theme_minimal() + xlab("Longitude") + ylab("Latitude") + 
   coord_fixed()+
   geom_text(data=centro,aes(x=meanLon,y=meanLat,label=Sector), col="navy",fontface = "bold")+
-  scale_fill_viridis_c()+theme(legend.position = "bottom")
+  scale_fill_viridis_c()+theme(legend.position = "bottom")+
+  theme(legend.key.size = unit(1,"cm"))
 
-cowplot::plot_grid(H.plot,J.plot,Dens.plot,Juv.plot, nrow=2)
+cowplot::plot_grid(H.plot,NULL,J.plot,Dens.plot,NULL,Juv.plot, nrow=2, rel_widths = c(1,-0.3,1))
 
 index_year_long$group <- ifelse(as.numeric(index_year_long$Year)<9,1,2)
 index_year_long$group <- ifelse(as.numeric(index_year_long$Year)>11,3,index_year_long$group)
@@ -264,8 +268,6 @@ var23 <- fviz_pca_var(res.pca,title="PCA fish community - 2/3", select.var = lis
 
 cowplot::plot_grid(ind12,var12,ind13,var13,ind23,var23,ncol=2)
 
-var12 <- fviz_pca_var(res.pca,title="Résultats ACP CP 1/2", select.var = list(cos2=10), labelsize=4, repel=T)
-var13 <- fviz_pca_var(res.pca,title="CP 1/3", select.var = list(cos2=10), labelsize=4, repel=T, axes = c(1,3))
 
 cowplot::plot_grid(var12,var13,ncol=2)
 
@@ -515,11 +517,11 @@ res.hcpc$desc.var$quanti$`4`[1:6,c(1,2,3,6)]
 
 Clust <- cbind(metadata, Cluster=res.hcpc$data.clust$clust)
 groups <- as.character(Clust$Cluster)
-groups[groups==1] <- "Benthic assemblage"
-groups[groups==2] <- "Pelagic assemblage"
+groups[groups==1] <- "Benthic-like assemblage"
+groups[groups==2] <- "Pelagic-like assemblage"
 groups[groups==3] <- "Gobiidae assemblage"
 groups[groups==4] <- "Dragonet assemblage"
-groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic assemblage","Benthic assemblage"))
+groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic-like assemblage","Benthic-like assemblage"))
 
 
 fviz_dend(res.hcpc, 
@@ -576,11 +578,11 @@ coast <- raster::crop(coast, raster::extent(-0.2,0.3,49.25,49.65))
 coast.fort <- fortify(coast)
 Clust1 <- Clust
 groups <- as.character(Clust1$Cluster)
-groups[groups==1] <- "Benthic assemblage"
-groups[groups==2] <- "Pelagic assemblage"
+groups[groups==1] <- "Benthic-like assemblage"
+groups[groups==2] <- "Pelagic-like assemblage"
 groups[groups==3] <- "Gobiidae assemblage"
 groups[groups==4] <- "Dragonet assemblage"
-groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic assemblage","Benthic assemblage"))
+groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic-like assemblage","Benthic-like assemblage"))
 Clust1$Cluster <- groups
 
 ggplot(Clust1)+
@@ -595,11 +597,11 @@ ggplot(Clust1)+
 
 tileplot <- cbind(metadata, Cluster=res.hcpc$data.clust$clust)
 groups <- as.character(tileplot$Cluster)
-groups[groups==1] <- "Benthic assemblage"
-groups[groups==2] <- "Pelagic assemblage"
+groups[groups==1] <- "Benthic-like assemblage"
+groups[groups==2] <- "Pelagic-like assemblage"
 groups[groups==3] <- "Gobiidae assemblage"
 groups[groups==4] <- "Dragonet assemblage"
-groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic assemblage","Benthic assemblage"))
+groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic-like assemblage","Benthic-like assemblage"))
 tileplot$Cluster <- groups
 tileplot <- tileplot %>% group_by(Year, Sector, Cluster) %>% dplyr::mutate(Number=length(Station_Code)) %>% ungroup() 
 
@@ -610,15 +612,25 @@ ggplot(tileplot)+
 tileplot <- cbind(metadata, Cluster=res.hcpc$data.clust$clust)
 tileplot <- tileplot %>% group_by(Year, Cluster) %>% dplyr::mutate(Number=length(Station_Code)) %>% ungroup() 
 groups <- as.character(tileplot$Cluster)
-groups[groups==1] <- "Benthic assemblage"
-groups[groups==2] <- "Pelagic assemblage"
+groups[groups==1] <- "Benthic-like assemblage"
+groups[groups==2] <- "Pelagic-like assemblage"
 groups[groups==3] <- "Gobiidae assemblage"
 groups[groups==4] <- "Dragonet assemblage"
-groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic assemblage","Benthic assemblage"))
+groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic-like assemblage","Benthic-like assemblage"))
 tileplot$Cluster <- groups
 ggplot(tileplot)+
   geom_point(aes(x=Year,y=Cluster,col=Cluster, size=Number),alpha=0.2)+
   scale_color_manual(values = get_palette(c("#00AFBB", "#E7B800", "#FC4E07"), length(unique(tileplot$Cluster))))
+ggplot(tileplot, aes(x=Year))+
+  geom_bar(aes(fill=Cluster),position="stack", stat="count")
+
+tileplot2 <- tileplot %>% dplyr::group_by(Year) %>%
+  dplyr::mutate(perc = Number / length(Station_Code)) %>% dplyr::select(Year, Cluster, Number, perc) %>% unique()
+
+ggplot(tileplot2, aes(x=Year)) +
+  geom_bar(aes(y=perc, fill=Cluster), stat="identity", position="stack")
+
+
 
 tileplot$Survey <- 0
 tileplot$Survey[tileplot$Year %in% c(1995:2002)] <- 1
@@ -640,26 +652,26 @@ Abund.rel.com <- Abund.rel.com %>% dplyr::group_by(Year) %>% dplyr::mutate(Group
 
 
 groups <- as.character(Abund.rel.com$Cluster)
-groups[groups==1] <- "Benthic assemblage"
-groups[groups==2] <- "Pelagic assemblage"
+groups[groups==1] <- "Benthic-like assemblage"
+groups[groups==2] <- "Pelagic-like assemblage"
 groups[groups==3] <- "Gobiidae assemblage"
 groups[groups==4] <- "Dragonet assemblage"
-groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic assemblage","Benthic assemblage"))
+groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic-like assemblage","Benthic-like assemblage"))
 Abund.rel.com$Cluster <- groups
 
 Abund.rel.com$Survey <- 0
 Abund.rel.com$Survey[Abund.rel.com$Year %in% c(1995:2002)] <- "1995-2002"
 Abund.rel.com$Survey[Abund.rel.com$Year %in% c(2008:2010)] <- "2008-2010"
 Abund.rel.com$Survey[Abund.rel.com$Year %in% c(2017:2019)] <- "2017-2019"
-
+#Abund.rel.com$Group_density <- Abund.rel.com$Group_density*100
 library(patchwork)
 coeff <- max(Abund.rel.com$Total_density)
 ggplot(Abund.rel.com, aes(x=Year))+
   geom_bar(aes(y=Group_density,fill=Cluster),position="stack", stat="identity")+
   geom_line(aes(y=Total_density/coeff, group=Survey))+ 
   scale_y_continuous(
-    "Relative density (%)", 
-    sec.axis = sec_axis(~ . * coeff, name = "Total density")
+    "Relative density", 
+    sec.axis = sec_axis(~ . *coeff, name = "Total density (ind/m²)")
   )+
   scale_fill_manual(values = get_palette(c("#00AFBB", "#E7B800", "#FC4E07"), length(unique(Abund.rel.com$Cluster))))+
   facet_grid(.~Survey,scales="free",space="free")+
@@ -704,11 +716,11 @@ Abund.com <- cbind(metadata, Cluster=res.hcpc$data.clust$clust,S)
 Abund.com <- Abund.com %>% dplyr::select(Year,Cluster,S) %>% distinct()
 
 groups <- as.character(Abund.com$Cluster)
-groups[groups==1] <- "Benthic assemblage"
-groups[groups==2] <- "Pelagic assemblage"
+groups[groups==1] <- "Benthic-like assemblage"
+groups[groups==2] <- "Pelagic-like assemblage"
 groups[groups==3] <- "Gobiidae assemblage"
 groups[groups==4] <- "Dragonet assemblage"
-groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic assemblage","Benthic assemblage"))
+groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic-like assemblage","Benthic-like assemblage"))
 Abund.com$Cluster <- groups
 
 Abund.com$Survey <- 0
@@ -717,9 +729,9 @@ Abund.com$Survey[Abund.com$Year %in% c(2008:2010)] <- "2008-2010"
 Abund.com$Survey[Abund.com$Year %in% c(2017:2019)] <- "2017-2019"
 
 #Boxplot index distribution
-my_comparisons <- list(c("Gobiidae\nassemblage","Pelagic\nassemblage"),c("Gobiidae\nassemblage","Dragonet\nassemblage"),c("Pelagic\nassemblage","Benthic\nassemblage"))
+my_comparisons <- list(c("Gobiidae\nassemblage","Pelagic-like\nassemblage"),c("Gobiidae\nassemblage","Dragonet\nassemblage"),c("Pelagic-like\nassemblage","Benthic-like\nassemblage"))
 Abund.com$Cluster <- sub(" ","\n",Abund.com$Cluster)
-Abund.com$Cluster <- factor(Abund.com$Cluster, ordered = T, levels=c("Dragonet\nassemblage","Gobiidae\nassemblage","Pelagic\nassemblage","Benthic\nassemblage"))
+Abund.com$Cluster <- factor(Abund.com$Cluster, ordered = T, levels=c("Dragonet\nassemblage","Gobiidae\nassemblage","Pelagic-like\nassemblage","Benthic-like\nassemblage"))
 ggboxplot(Abund.com,x="Cluster",y="S",
           scales="free_y")+
   stat_compare_means(aes(group=Cluster),label.y=0)+
@@ -873,11 +885,11 @@ Clust.comp.rel <- Clust.comp.rel %>% dplyr::group_by(Year,Clust.trait) %>%
   dplyr::mutate(Abund_rel=Abund_group/sum(Abund)) %>% ungroup() %>% dplyr::select(-Station,-Abund) %>% distinct()
 
 groups <- as.character(Clust.comp.rel$Assemblage)
-groups[groups==1] <- "Benthic assemblage"
-groups[groups==2] <- "Pelagic assemblage"
+groups[groups==1] <- "Benthic-like assemblage"
+groups[groups==2] <- "Pelagic-like assemblage"
 groups[groups==3] <- "Gobiidae assemblage"
 groups[groups==4] <- "Dragonet assemblage"
-groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic assemblage","Benthic assemblage"))
+groups <- factor(groups, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic-like assemblage","Benthic-like assemblage"))
 Clust.comp.rel$Assemblage <- groups
 groups <- as.character(Clust.comp.rel$Clust.trait)
 groups[groups==0] <- "Missing data species"
@@ -1576,7 +1588,7 @@ Tabsst2$Parameter <- "SST"
 names(TabTurb2)[4] <- "Values"
 TabTurb2$Parameter <- "Turbidity"
 names(Tabchl2)[4] <- "Values"
-Tabchl2$Parameter <- "Chlorophyll"
+Tabchl2$Parameter <- "Chlorophyll a"
 
 
 Env <- rbind(Tabsst2,TabTurb2,Tabchl2)
@@ -1601,7 +1613,7 @@ Env.anomY$absolute <- ifelse(Env.anomY$Values<0,1,2)
 
 ggplot(Env.anomY)+
   geom_bar(aes(x= Year, y= Values, fill=absolute),stat="identity")+
-  ggtitle("Environmental anomalies")+
+  ggtitle("")+
   scale_fill_viridis_c()+
   xlab("Year")+
   ylab("Anomalies")+
@@ -1682,7 +1694,7 @@ metadata$Depth[!is.na(rowSums(metadata[,c(6,7)]))] <- metadata$Depth[!is.na(rowS
 metadata$Depth <- cut(metadata$Depth, breaks = c(0,5,10,15,20,25,30,35), include.lowest = T)
 Comm <- Comm %>% dplyr::select(-Station_Code,-Year,-meanLon,-meanLat)
 #####
-#Trait#####
+#Functional indices #####
 datatrait <- read.csv("data/Trait.csv", head=T, sep=";", dec=",")
 
 #Remove G0/1/2p
@@ -1757,25 +1769,27 @@ View(CMW.dom$CWM)
 View(cbind(abund.trait.an.assemblage[,c(1:2)],CMW.dom$CWM))
 
 
-https://github.com/ThibaultCariou/Seine_fishcom
+#https://github.com/ThibaultCariou/Seine_fishcom
+#https://github.com/ThibaultCariou/Seine_fishcom.git
 
 #FD index
 FDiv <- dbFD(as.matrix(trait.dffactor), abund.trait, CWM.type="dom")
 View(FDiv$CWM)
-Div <- data.frame(metadata,FRic=FDiv$FRic,FEve=FDiv$FEve,FDis=FDiv$FDis)
+Div <- data.frame(metadata,FRic=FDiv$FRic,FEve=FDiv$FEve,FDis=FDiv$FDis,Rao=FDiv$RaoQ,Simpson=diversity(abund.trait, index = "simpson"))
+Div$Redun <- 1-(Div$Rao/Div$Simpson)
 toto <- Clust[,c(1,2,9)]
 # toto$Year <- factor(toto$Year); toto$Station_Code <- factor(toto$Station_Code) ; toto$Cluster <- factor(toto$Cluster)
 # Div$Year <- factor(Div$Year); Div$Station_Code <- factor(Div$Station_Code)
 Div <- Div %>% dplyr::left_join(toto, by=c("Year"="Year","Station_Code"="Station_Code"))
-names(Div)[12] <- "Assemblage"
+names(Div)[15] <- "Assemblage"
 
 Div$Assemblage <- as.character(Div$Assemblage)
-Div$Assemblage[Div$Assemblage==1] <- "Pelagic assemblage"
-Div$Assemblage[Div$Assemblage==2] <- "Benthic assemblage"
+Div$Assemblage[Div$Assemblage==1] <- "Pelagic-like assemblage"
+Div$Assemblage[Div$Assemblage==2] <- "Benthic-like assemblage"
 Div$Assemblage[Div$Assemblage==3] <- "Gobiidae assemblage"
 Div$Assemblage[Div$Assemblage==4] <- "Dragonet assemblage"
-Div$Assemblage <- factor(Div$Assemblage, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic assemblage","Benthic assemblage"))
-Div.long <- Div %>% tidyr::pivot_longer(9:11, names_to="Index",values_to="Values")
+Div$Assemblage <- factor(Div$Assemblage, ordered = T, levels = c("Dragonet assemblage","Gobiidae assemblage","Pelagic-like assemblage","Benthic-like assemblage"))
+Div.long <- Div %>% tidyr::pivot_longer(9:14, names_to="Index",values_to="Values")
 
 
 toto <- aggregate(Values~Index+Sector+Year, data=Div.long, mean)
@@ -1787,12 +1801,12 @@ ggplot(toto)+
   #geom_text(aes(x=Assemblage, y=Values, label=signi),data=res.wilcox, position = position_nudge(y=0.05))+
   facet_grid(Index~Sector, scales="free_y")+
   guides(fill=F)+
-  scale_fill_manual(values=gray(c(0.3,0.5,0.7)))+
+  scale_fill_viridis_d()+
   theme_minimal()
 
-wilcox.test(Div.long$Values[Div.long$Index=="FEve"& Div.long$Assemblage=="Gobiidae assemblage"],Div.long$Values[Div.long$Index=="FEve"& Div.long$Assemblage=="Benthic assemblage"])
+wilcox.test(Div.long$Values[Div.long$Index=="FEve"& Div.long$Assemblage=="Gobiidae assemblage"],Div.long$Values[Div.long$Index=="FEve"& Div.long$Assemblage=="Benthic-like assemblage"])
 
-Div.long <- Div %>% tidyr::pivot_longer(9:11, names_to="Index",values_to="Values")
+#Div.long <- Div %>% tidyr::pivot_longer(9:11, names_to="Index",values_to="Values")
 Div.long$Survey <- 0
 Div.long$Survey[Div.long$Year %in% c(1995:2002)] <- 1
 Div.long$Survey[Div.long$Year %in% c(2008:2010)] <- 2
@@ -1807,18 +1821,19 @@ ggplot(toto)+
   #geom_text(aes(x=Assemblage, y=Values, label=signi),data=res.wilcox, position = position_nudge(y=0.05))+
   facet_grid(Index~Assemblage, scales="free_y")+
   guides(fill=F)+
-  scale_fill_manual(values=gray(c(0.3,0.5,0.7)))+
+  scale_fill_viridis_d()+
   theme_minimal()
 
 #Boxplot index distribution
-my_comparisons <- list(c("Gobiidae\nassemblage","Pelagic\nassemblage"),c("Gobiidae\nassemblage","Dragonet\nassemblage"),c("Pelagic\nassemblage","Benthic\nassemblage"))
+my_comparisons <- list(c("Gobiidae\nassemblage","Pelagic-like\nassemblage"),c("Gobiidae\nassemblage","Dragonet\nassemblage"),c("Pelagic-like\nassemblage","Benthic-like\nassemblage"))
 Div.long$Assemblage <- sub(" ","\n",Div.long$Assemblage)
-Div.long$Assemblage <- factor(Div.long$Assemblage, ordered = T, levels=c("Dragonet\nassemblage","Gobiidae\nassemblage","Pelagic\nassemblage","Benthic\nassemblage"))
-ggboxplot(Div.long,x="Assemblage",y="Values",
+Div.long$Assemblage <- factor(Div.long$Assemblage, ordered = T, levels=c("Dragonet\nassemblage","Gobiidae\nassemblage","Pelagic-like\nassemblage","Benthic-like\nassemblage"))
+Div.long <- Div.long[!is.na(Div.long$Values),]
+ggboxplot(Div.long[!c(Div.long$Index %in% c("Rao","Simpson")),],x="Assemblage",y="Values",
           facet.by="Index", scales="free_y")+
-  stat_compare_means(aes(group=Assemblage),label.y=0)+
+  stat_compare_means(aes(group=Assemblage),label.y.npc = c("left","bottom"))+
   stat_compare_means(comparisons = my_comparisons)
-  stat_compare_means()
+  #stat_compare_means()
 #####
 
 #Anomalies FD indexes
